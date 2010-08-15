@@ -25,12 +25,16 @@ import tornado.web
 
 vocab = {'我,1281830906': {
            '汉字': '我',
-           'English': ['I'],
+           'English': 'I',
            'Pinyin': 'wo3',
            'Examples': ['我爱你'],
            'Tags': ['pronoun', 'chapter1'],
           },
         }
+
+def get_words_with_tag(tag):
+  return [word for word in vocab.itervalues()
+          if tag.lower() in map(lambda x: x.lower(), word['Tags'])]
 
 class Application(tornado.web.Application):
   def __init__(self):
@@ -68,7 +72,11 @@ class VocabHandler(tornado.web.RequestHandler):
 
 class QuizHandler(tornado.web.RequestHandler):
   def get(self):
-    self.render("quiz.html")
+    self.render("quiz.html", words=None)
+
+  def post(self):
+    words = get_words_with_tag(self.get_argument("tag"))
+    self.render("quiz.html", words=words, front=self.get_argument("front"), tag=self.get_argument("tag"))
 
 def main():
   http_server = tornado.httpserver.HTTPServer(Application())

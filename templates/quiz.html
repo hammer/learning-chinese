@@ -5,6 +5,31 @@
   <head>
   </head>
   <body>
-    <p>Not yet implemented.</p>
+    <!-- Current Quiz -->
+    {% if words %}
+    <p>Tag: {{ tag }}</p>
+    <table>
+      <tr>
+        <th>Front</th>
+        <th>Back</th>
+      </tr>
+      {% for word in words %}
+      <tr>
+        <td>{{ word[front] }}</td>
+        <td>{{ str(word) }}</td>
+      </tr>
+      {% end %}
+    </table>
+    {% end %}
+
+    <!-- Start a New Quiz -->
+    <form action="/quiz" method="post">
+      <input type="text" name="tag">
+      <input type="text" name="front">
+      <input type="submit" value="Submit">
+    </form>
+
+    <!-- Quiz History -->
+    <!-- Not Yet Implemented -->
   </body>
 </html>
