@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+  </head>
+  <body>
+    <table>
+      <tr>
+        <th>汉字</th>
+        <th>English</th>
+        <th>Pinyin</th>
+        <th>Tags</th>
+      </tr>
+      {% for key, word in vocab.iteritems() %}
+      <tr>
+        <td>{{ word['汉字'] }}</td>
+        <td>{{ word['Pinyin'] }}</td>
+        <td>{{ str(word['English']) }}</td>
+        <td>{{ str(word['Tags']) }}</td>
+      </tr>
+      {% end %}
+    </table>
+  </body>
+</html>
