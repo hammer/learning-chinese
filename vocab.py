@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-
 import os
+import time
 
 import tornado.httpserver
 import tornado.ioloop
@@ -27,6 +27,7 @@ vocab = {'我,1281830906': {
            '汉字': '我',
            'English': ['I'],
            'Pinyin': 'wo3',
+           'Examples': ['我爱你'],
            'Tags': ['pronoun', 'chapter1'],
           },
         }
@@ -35,6 +36,8 @@ class Application(tornado.web.Application):
   def __init__(self):
     handlers = [
       (r"/", MainHandler),
+      (r"/vocab", VocabHandler),
+      (r"/quiz", QuizHandler),
     ]
     settings = dict(
       template_path=os.path.join(os.path.dirname(__file__), "templates"),
@@ -44,7 +47,28 @@ class Application(tornado.web.Application):
 
 class MainHandler(tornado.web.RequestHandler):
   def get(self):
-    self.render("index.html", vocab=vocab)
+    self.render("index.html")
+
+class VocabHandler(tornado.web.RequestHandler):
+  def get(self):
+    self.render("vocab.html", vocab=vocab, new_word=None)
+
+  # TODO(hammer): Form validation: deduplicate new words, etc.
+  def post(self):
+    # Add new word to vocab list
+    vocab['%s,%s' % (self.get_argument("汉字"), int(time.time()))] = {
+      '汉字': self.get_argument("汉字"),
+      'English': self.get_argument("English"),
+      'Pinyin': self.get_argument("Pinyin"),
+      'Examples': self.get_argument("Examples"),
+      'Tags': self.get_argument("Tags")}
+
+    # Re-render vocab page, highlighting the word just added
+    self.render("vocab.html", vocab=vocab, new_word=self.get_argument("汉字"))
+
+class QuizHandler(tornado.web.RequestHandler):
+  def get(self):
+    self.render("quiz.html")
 
 def main():
   http_server = tornado.httpserver.HTTPServer(Application())
