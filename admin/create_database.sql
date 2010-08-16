@@ -1,0 +1,1 @@
+CREATE DATABASE `learning_chinese` /*!40100 DEFAULT CHARACTER SET utf8 */
