@@ -81,12 +81,12 @@ DROP TABLE IF EXISTS `words`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `words` (
   `word_id` int(11) NOT NULL AUTO_INCREMENT,
-  `æ±‰å­—` text,
+  `hanzi` text,
   `pinyin` text,
   `english` text,
   `time_entered` int(11) DEFAULT NULL,
   PRIMARY KEY (`word_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -98,4 +98,4 @@ CREATE TABLE `words` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-08-15 17:15:31
+-- Dump completed on 2010-08-18  1:07:59

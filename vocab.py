@@ -2,6 +2,7 @@
 import os
 import time
 
+import tornado.database
 import tornado.httpserver
 import tornado.ioloop
 import tornado.web
@@ -23,18 +24,32 @@ import tornado.web
 # 3. Cards in set
 # Capturing history would also be nice
 
-vocab = {'我,1281830906': {
-           '汉字': '我',
-           'English': 'I',
-           'Pinyin': 'wo3',
-           'Examples': ['我爱你'],
-           'Tags': ['pronoun', 'chapter1'],
-          },
-        }
+db = tornado.database.Connection("localhost", "learning_chinese", "root")
+
+# TODO(hammer): add tags and examples
+def get_vocab():
+  sql = """\
+SELECT `hanzi`, `pinyin`, `english`
+FROM words
+"""
+  return db.query(sql.decode('utf8'))
+
+def put_word(hanzi, pinyin, english, time_entered):
+  sql = """\
+INSERT INTO words (`hanzi`, `pinyin`, `english`, `time_entered`)
+VALUES ('%s', '%s', '%s', %s)
+""" % (hanzi, pinyin, english, time_entered)
+  return db.query(sql)
 
 def get_words_with_tag(tag):
-  return [word for word in vocab.itervalues()
-          if tag.lower() in map(lambda x: x.lower(), word['Tags'])]
+  sql = """\
+SELECT `hanzi`, `pinyin`, `english`
+FROM words
+WHERE word_id IN 
+  (SELECT word_id FROM word_tags
+   WHERE LOWER(tag) LIKE '%s')
+""" % tag
+  return db.query(sql)
 
 class Application(tornado.web.Application):
   def __init__(self):
@@ -55,20 +70,15 @@ class MainHandler(tornado.web.RequestHandler):
 
 class VocabHandler(tornado.web.RequestHandler):
   def get(self):
-    self.render("vocab.html", vocab=vocab, new_word=None)
+    self.render("vocab.html", vocab=get_vocab(), new_word=None)
 
   # TODO(hammer): Form validation: deduplicate new words, etc.
   def post(self):
     # Add new word to vocab list
-    vocab['%s,%s' % (self.get_argument("汉字"), int(time.time()))] = {
-      '汉字': self.get_argument("汉字"),
-      'English': self.get_argument("English"),
-      'Pinyin': self.get_argument("Pinyin"),
-      'Examples': self.get_argument("Examples"),
-      'Tags': self.get_argument("Tags")}
+    put_word(self.get_argument("汉字"), self.get_argument("Pinyin"), self.get_argument("English"), int(time.time()))
 
     # Re-render vocab page, highlighting the word just added
-    self.render("vocab.html", vocab=vocab, new_word=self.get_argument("汉字"))
+    self.render("vocab.html", vocab=get_vocab(), new_word=self.get_argument("汉字"))
 
 class QuizHandler(tornado.web.RequestHandler):
   def get(self):

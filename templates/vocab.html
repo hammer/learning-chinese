@@ -10,8 +10,6 @@
       <input type="text" name="汉字">
       <input type="text" name="English">
       <input type="text" name="Pinyin">
-      <input type="text" name="Examples">
-      <input type="text" name="Tags">
       <input type="submit" value="Submit">
     </form>
 
@@ -28,16 +26,12 @@
         <th>汉字</th>
         <th>English</th>
         <th>Pinyin</th>
-        <th>Examples</th>
-        <th>Tags</th>
       </tr>
-      {% for key, word in vocab.iteritems() %}
+      {% for word in vocab %}
       <tr>
-        <td>{{ word['汉字'] }}</td>
-        <td>{{ word['Pinyin'] }}</td>
-        <td>{{ str(word['Examples']) }}</td>
-        <td>{{ str(word['English']) }}</td>
-        <td>{{ str(word['Tags']) }}</td>
+        <td>{{ word.hanzi }}</td>
+        <td>{{ word.pinyin }}</td>
+        <td>{{ word.english }}</td>
       </tr>
       {% end %}
     </table>
