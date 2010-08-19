@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import random
 import time
 
 import tornado.database
@@ -26,20 +27,40 @@ import tornado.web
 
 db = tornado.database.Connection("localhost", "learning_chinese", "root")
 
-# TODO(hammer): add tags and examples
+# TODO(hammer): get examples too?
 def get_vocab():
   sql = """\
-SELECT `hanzi`, `pinyin`, `english`
-FROM words
+SELECT a.hanzi, a.pinyin, a.english, GROUP_CONCAT(b.tag SEPARATOR ', ') AS tags
+FROM words AS a, word_tags AS b
+WHERE a.word_id = b.word_id
+GROUP BY a.word_id
 """
-  return db.query(sql.decode('utf8'))
+  return db.query(sql)
 
-def put_word(hanzi, pinyin, english, time_entered):
+# TODO(hammer): Use InnoDB and make this a single transaction
+def put_word(hanzi, pinyin, english, tags, time_entered):
+  # add to words table
   sql = """\
 INSERT INTO words (`hanzi`, `pinyin`, `english`, `time_entered`)
 VALUES ('%s', '%s', '%s', %s)
 """ % (hanzi, pinyin, english, time_entered)
-  return db.query(sql)
+  db.execute(sql)
+
+  # get word_id
+  sql = """\
+SELECT word_id
+FROM words
+WHERE time_entered = %s
+""" % time_entered
+  word_id = db.get(sql).word_id
+
+  # add to word_tags table
+  for tag in tags.split(','):
+    sql = """\
+INSERT INTO word_tags (word_id, tag)
+VALUES (%s, '%s')
+""" % (word_id, tag.strip())
+    db.execute(sql)
 
 def get_words_with_tag(tag):
   sql = """\
@@ -75,7 +96,11 @@ class VocabHandler(tornado.web.RequestHandler):
   # TODO(hammer): Form validation: deduplicate new words, etc.
   def post(self):
     # Add new word to vocab list
-    put_word(self.get_argument("汉字"), self.get_argument("Pinyin"), self.get_argument("English"), int(time.time()))
+    put_word(self.get_argument("汉字"),
+             self.get_argument("Pinyin"),
+             self.get_argument("English"),
+             self.get_argument("Tags"),
+             int(time.time()))
 
     # Re-render vocab page, highlighting the word just added
     self.render("vocab.html", vocab=get_vocab(), new_word=self.get_argument("汉字"))
@@ -85,7 +110,9 @@ class QuizHandler(tornado.web.RequestHandler):
     self.render("quiz.html", words=None)
 
   def post(self):
+    # get the words corresponding to a tag and randomize their order
     words = get_words_with_tag(self.get_argument("tag"))
+    random.shuffle(words)
     self.render("quiz.html", words=words, front=self.get_argument("front"), tag=self.get_argument("tag"))
 
 def main():

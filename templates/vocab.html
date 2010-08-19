@@ -8,8 +8,9 @@
     <!-- Add a New Word -->
     <form action="/vocab" method="post">
       <input type="text" name="汉字">
-      <input type="text" name="English">
       <input type="text" name="Pinyin">
+      <input type="text" name="English">
+      <input type="text" name="Tags">
       <input type="submit" value="Submit">
     </form>
 
@@ -24,14 +25,16 @@
     <table>
       <tr>
         <th>汉字</th>
-        <th>English</th>
         <th>Pinyin</th>
+        <th>English</th>
+        <th>Tags</th>
       </tr>
       {% for word in vocab %}
       <tr>
         <td>{{ word.hanzi }}</td>
         <td>{{ word.pinyin }}</td>
         <td>{{ word.english }}</td>
+        <td>{{ word.tags }}</td>
       </tr>
       {% end %}
     </table>
