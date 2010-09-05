@@ -72,6 +72,13 @@ WHERE word_id IN
 """ % tag
   return db.query(sql)
 
+def reset_application():
+  for table in ['words', 'word_tags', 'word_examples', 'quizzes', 'quiz_words']:
+    sql = """\
+TRUNCATE %s;
+""" % table
+    db.execute(sql)
+
 class Application(tornado.web.Application):
   def __init__(self):
     handlers = [
@@ -87,6 +94,11 @@ class Application(tornado.web.Application):
 
 class MainHandler(tornado.web.RequestHandler):
   def get(self):
+    self.render("index.html")
+
+  def post(self):
+    if self.get_argument("action") == "reset":
+      reset_application()
     self.render("index.html")
 
 class VocabHandler(tornado.web.RequestHandler):

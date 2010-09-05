@@ -9,14 +9,15 @@
     <!--[if lt IE 8]><link rel="stylesheet" href="{{ static_url("css/blueprint/ie.css") }}" type="text/css" media="screen, projection"><![endif]-->
 
     <link rel="stylesheet" href="{{ static_url("css/header.css") }}" type="text/css">
+    <link rel="stylesheet" href="{{ static_url("css/vocab.css") }}" type="text/css">
   </head>
   <body>
     <!-- Container for Blueprint Grid -->
     <div class="container">
 
       <!-- Header -->
-      <div class="span-24 last" id="header"></div>
-        <div class="span-8" id="header"><h1>学习中文<h1></div>
+      <div class="span-24 last" id="header">
+        <div class="span-8" id="header"><h1><a href="/">学习中文</a><h1></div>
         <div class="span-16 last">
           <ul id="navlist">
             <li><a href="vocab">vocab</a></li>
@@ -30,11 +31,28 @@
       <div class="span-24 last">
         <!-- Add a New Word -->
         <form action="/vocab" method="post">
-          <input type="text" name="汉字">
-          <input type="text" name="Pinyin">
-          <input type="text" name="English">
-          <input type="text" name="Tags">
-          <input type="submit" value="Submit">
+          <fieldset>
+            <legend>New Word</legend>
+            <ul id="new-word-entry">
+              <li>
+                <div class="span-4"><label for="汉字">汉字</lebl></div>
+                <div class="span-20 last"><input type="text" name="汉字"></div>
+              </li>
+              <li>
+                <div class="span-4"><label for="Pinyin">Pinyin</lebl></div>
+                <div class="span-20 last"><input type="text" name="Pinyin"></div>
+              </li>
+              <li>
+                <div class="span-4"><label for="English">English</lebl></div>
+                <div class="span-20 last"><input type="text" name="English"></div>
+              </li>
+              <li>
+                <div class="span-4"><label for="Tags">Tags</lebl></div>
+                <div class="span-20 last"><input type="text" name="Tags"></div>
+              </li>
+            </ul>
+            <input type="submit" value="Submit">
+          </fieldset>
         </form>
 
         <!-- Just Added Word -->

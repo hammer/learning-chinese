@@ -9,14 +9,15 @@
     <!--[if lt IE 8]><link rel="stylesheet" href="{{ static_url("css/blueprint/ie.css") }}" type="text/css" media="screen, projection"><![endif]-->
 
     <link rel="stylesheet" href="{{ static_url("css/header.css") }}" type="text/css">
+    <link rel="stylesheet" href="{{ static_url("css/quiz.css") }}" type="text/css">
   </head>
   <body>
     <!-- Container for Blueprint Grid -->
     <div class="container">
 
       <!-- Header -->
-      <div class="span-24 last" id="header"></div>
-        <div class="span-8" id="header"><h1>学习中文<h1></div>
+      <div class="span-24 last" id="header">
+        <div class="span-8" id="header"><h1><a href="/">学习中文</a><h1></div>
         <div class="span-16 last">
           <ul id="navlist">
             <li><a href="vocab">vocab</a></li>
@@ -28,6 +29,30 @@
 
       <!-- Main Content -->
       <div class="span-24 last">
+        <!-- Start a New Quiz -->
+        <form action="/quiz" method="post">
+          <fieldset>
+            <legend>New Quiz</legend>
+            <ul id="new-quiz-create">
+              <li>
+                <div class="span-4"><label for="tag">Tag</lebl></div>
+                <div class="span-20 last"><input type="text" name="tag"></div>
+              </li>
+              <li>
+                <div class="span-4"><label for="front">Front</lebl></div>
+                <div class="span-20 last">
+                  <ul>
+                    </li><input type="radio" name="front" value="hanzi">汉字</li>
+                    </li><input type="radio" name="front" value="pinyin">Pinyin</li>
+                    </li><input type="radio" name="front" value="english">English</li>
+                  </ul>
+                </div>
+              </li>
+            </ul>
+            <input type="submit" value="Submit">
+          </fieldset>
+        </form>
+
         <!-- Current Quiz -->
         {% if words %}
         <p>Tag: {{ tag }}</p>
@@ -38,19 +63,12 @@
           </tr>
           {% for word in words %}
           <tr>
-            <td>{{ word[front] }}</td>
+            <td>{{ word[front.lower()] }}</td>
             <td>{{ str(word) }}</td>
           </tr>
           {% end %}
         </table>
         {% end %}
-
-        <!-- Start a New Quiz -->
-        <form action="/quiz" method="post">
-          <input type="text" name="tag">
-          <input type="text" name="front">
-          <input type="submit" value="Submit">
-        </form>
 
         <!-- Quiz History -->
         <!-- Not Yet Implemented -->

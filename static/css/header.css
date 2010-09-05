@@ -3,6 +3,11 @@
   margin-bottom:10px;
 }
 
+#header h1 a {
+  text-decoration: none;
+  color: black;
+}
+
 #navlist li {
   display:inline;
   list-style-type:none;
