@@ -63,13 +63,20 @@ VALUES (%s, '%s')
     db.execute(sql)
 
 def get_words_with_tag(tag):
+  # Get all tags
+  tags = tag.split("+")
+  tag_string = "(%s)" % ",".join(["'%s'" % tag for tag in tags])
+
   sql = """\
 SELECT `hanzi`, `pinyin`, `english`, `part_of_speech`
 FROM words
 WHERE word_id IN 
   (SELECT word_id FROM word_tags
-   WHERE LOWER(tag) LIKE '%s')
-""" % tag
+   WHERE LOWER(tag) IN %s
+   GROUP BY word_id
+   HAVING COUNT(*) = %d)
+""" % (tag_string, len(tags))
+  print sql
   return db.query(sql)
 
 def reset_application():
@@ -125,6 +132,7 @@ class QuizHandler(tornado.web.RequestHandler):
   def post(self):
     # get the words corresponding to a tag and randomize their order
     words = get_words_with_tag(self.get_argument("tag"))
+    print words
     random.shuffle(words)
     self.render("quiz.html", words=words, front=self.get_argument("front"), tag=self.get_argument("tag"))
 
