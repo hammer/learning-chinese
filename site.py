@@ -89,7 +89,13 @@ class Application(tornado.web.Application):
   def __init__(self):
     handlers = [
       (r"/", MainHandler),
+      (r"/radicals", RadicalsHandler),
+      (r"/characters", CharactersHandler),
       (r"/words", WordsHandler),
+      (r"/phrases", PhrasesHandler),
+      (r"/sentences", SentencesHandler),
+      (r"/passages", PassagesHandler),
+      (r"/documents", DocumentsHandler),
       (r"/quiz", QuizHandler),
     ]
     settings = dict(
@@ -107,9 +113,33 @@ class MainHandler(tornado.web.RequestHandler):
       reset_application()
     self.render("index.html")
 
+class RadicalsHandler(tornado.web.RequestHandler):
+  def get(self):
+    self.render("radicals.html")
+
+class CharactersHandler(tornado.web.RequestHandler):
+  def get(self):
+    self.render("characters.html")
+
 class WordsHandler(tornado.web.RequestHandler):
   def get(self):
     self.render("words.html", words=get_words(), new_word=None)
+
+class PhrasesHandler(tornado.web.RequestHandler):
+  def get(self):
+    self.render("phrases.html")
+
+class SentencesHandler(tornado.web.RequestHandler):
+  def get(self):
+    self.render("sentences.html")
+
+class PassagesHandler(tornado.web.RequestHandler):
+  def get(self):
+    self.render("passages.html")
+
+class DocumentsHandler(tornado.web.RequestHandler):
+  def get(self):
+    self.render("documents.html")
 
   # TODO(hammer): Form validation: deduplicate new words, etc.
   def post(self):
@@ -122,7 +152,9 @@ class WordsHandler(tornado.web.RequestHandler):
              int(time.time()))
 
     # Re-render words page, highlighting the word just added
-    self.render("words.html", words=get_words(), new_word=self.get_argument("汉字"))
+    self.render("words.html",
+                words=get_words(),
+                new_word=self.get_argument("汉字"))
 
 class QuizHandler(tornado.web.RequestHandler):
   def get(self):
@@ -132,7 +164,10 @@ class QuizHandler(tornado.web.RequestHandler):
     # get the words corresponding to a tag and randomize their order
     words = get_words_with_tag(self.get_argument("tag"))
     random.shuffle(words)
-    self.render("quiz.html", words=words, front=self.get_argument("front"), tag=self.get_argument("tag"))
+    self.render("quiz.html",
+                words=words,
+                front=self.get_argument("front"),
+                tag=self.get_argument("tag"))
 
 def main():
   http_server = tornado.httpserver.HTTPServer(Application())
