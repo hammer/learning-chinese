@@ -3,40 +3,68 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <!-- Blueprint -->
+    <link rel="stylesheet" href="{{ static_url("css/blueprint/screen.css") }}" type="text/css" media="screen, projection">
+    <link rel="stylesheet" href="{{ static_url("css/blueprint/print.css") }}" type="text/css" media="print">
+    <!--[if lt IE 8]><link rel="stylesheet" href="{{ static_url("css/blueprint/ie.css") }}" type="text/css" media="screen, projection"><![endif]-->
+
+    <link rel="stylesheet" href="{{ static_url("css/header.css") }}" type="text/css">
   </head>
   <body>
-    <!-- Add a New Word -->
-    <form action="/vocab" method="post">
-      <input type="text" name="汉字">
-      <input type="text" name="Pinyin">
-      <input type="text" name="English">
-      <input type="text" name="Tags">
-      <input type="submit" value="Submit">
-    </form>
+    <!-- Container for Blueprint Grid -->
+    <div class="container">
 
-    <!-- Just Added Word -->
-    {% if new_word %}
-    <hr />
-    <p>Just added: {{ new_word }}</p>
-    <hr />
-    {% end %}
+      <!-- Header -->
+      <div class="span-24 last" id="header"></div>
+        <div class="span-8" id="header"><h1>学习中文<h1></div>
+        <div class="span-16 last">
+          <ul id="navlist">
+            <li><a href="vocab">vocab</a></li>
+            <li><a href="quiz">quiz</a></li>
+          </ul>
+        </div>
+      </div>
+      <br />
 
-    <!-- Known Words -->
-    <table>
-      <tr>
-        <th>汉字</th>
-        <th>Pinyin</th>
-        <th>English</th>
-        <th>Tags</th>
-      </tr>
-      {% for word in vocab %}
-      <tr>
-        <td>{{ word.hanzi }}</td>
-        <td>{{ word.pinyin }}</td>
-        <td>{{ word.english }}</td>
-        <td>{{ word.tags }}</td>
-      </tr>
-      {% end %}
-    </table>
+      <!-- Main Content -->
+      <div class="span-24 last">
+        <!-- Add a New Word -->
+        <form action="/vocab" method="post">
+          <input type="text" name="汉字">
+          <input type="text" name="Pinyin">
+          <input type="text" name="English">
+          <input type="text" name="Tags">
+          <input type="submit" value="Submit">
+        </form>
+
+        <!-- Just Added Word -->
+        {% if new_word %}
+        <hr />
+        <p>Just added: {{ new_word }}</p>
+        <hr />
+        {% end %}
+
+        <!-- Known Words -->
+        <table>
+          <tr>
+            <th>汉字</th>
+            <th>Pinyin</th>
+            <th>English</th>
+            <th>Tags</th>
+          </tr>
+          {% for word in vocab %}
+          <tr>
+            <td>{{ word.hanzi }}</td>
+            <td>{{ word.pinyin }}</td>
+            <td>{{ word.english }}</td>
+            <td>{{ word.tags }}</td>
+          </tr>
+          {% end %}
+        </table>
+      </div>
+
+      <!-- Footer -->
+      <div class="span-24 last" id="footer"></div>
+    </div> 
   </body>
 </html>
