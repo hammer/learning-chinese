@@ -28,7 +28,7 @@ import tornado.web
 db = tornado.database.Connection("localhost", "learning_chinese", "root")
 
 # TODO(hammer): get examples too?
-def get_vocab():
+def get_words():
   sql = """\
 SELECT a.hanzi, a.pinyin, a.english, a.part_of_speech, GROUP_CONCAT(b.tag SEPARATOR ', ') AS tags
 FROM words AS a, word_tags AS b
@@ -90,7 +90,7 @@ class Application(tornado.web.Application):
   def __init__(self):
     handlers = [
       (r"/", MainHandler),
-      (r"/vocab", VocabHandler),
+      (r"/words", WordsHandler),
       (r"/quiz", QuizHandler),
     ]
     settings = dict(
@@ -108,13 +108,13 @@ class MainHandler(tornado.web.RequestHandler):
       reset_application()
     self.render("index.html")
 
-class VocabHandler(tornado.web.RequestHandler):
+class WordsHandler(tornado.web.RequestHandler):
   def get(self):
-    self.render("vocab.html", vocab=get_vocab(), new_word=None)
+    self.render("words.html", words=get_words(), new_word=None)
 
   # TODO(hammer): Form validation: deduplicate new words, etc.
   def post(self):
-    # Add new word to vocab list
+    # Add new word to words list
     put_word(self.get_argument("汉字"),
              self.get_argument("Pinyin"),
              self.get_argument("English"),
@@ -122,8 +122,8 @@ class VocabHandler(tornado.web.RequestHandler):
              self.get_argument("POS"),
              int(time.time()))
 
-    # Re-render vocab page, highlighting the word just added
-    self.render("vocab.html", vocab=get_vocab(), new_word=self.get_argument("汉字"))
+    # Re-render words page, highlighting the word just added
+    self.render("words.html", words=get_words(), new_word=self.get_argument("汉字"))
 
 class QuizHandler(tornado.web.RequestHandler):
   def get(self):
