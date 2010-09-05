@@ -50,6 +50,10 @@
                 <div class="span-4"><label for="Tags">Tags</lebl></div>
                 <div class="span-20 last"><input type="text" name="Tags"></div>
               </li>
+              <li>
+                <div class="span-4"><label for="POS">Part of Speech</lebl></div>
+                <div class="span-20 last"><input type="text" name="POS"></div>
+              </li>
             </ul>
             <input type="submit" value="Submit">
           </fieldset>
@@ -69,6 +73,7 @@
             <th>Pinyin</th>
             <th>English</th>
             <th>Tags</th>
+            <th>Part of Speech</th>
           </tr>
           {% for word in vocab %}
           <tr>
@@ -76,6 +81,7 @@
             <td>{{ word.pinyin }}</td>
             <td>{{ word.english }}</td>
             <td>{{ word.tags }}</td>
+            <td>{{ word.part_of_speech }}</td>
           </tr>
           {% end %}
         </table>

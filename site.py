@@ -30,7 +30,7 @@ db = tornado.database.Connection("localhost", "learning_chinese", "root")
 # TODO(hammer): get examples too?
 def get_vocab():
   sql = """\
-SELECT a.hanzi, a.pinyin, a.english, GROUP_CONCAT(b.tag SEPARATOR ', ') AS tags
+SELECT a.hanzi, a.pinyin, a.english, a.part_of_speech, GROUP_CONCAT(b.tag SEPARATOR ', ') AS tags
 FROM words AS a, word_tags AS b
 WHERE a.word_id = b.word_id
 GROUP BY a.word_id
@@ -38,12 +38,12 @@ GROUP BY a.word_id
   return db.query(sql)
 
 # TODO(hammer): Use InnoDB and make this a single transaction
-def put_word(hanzi, pinyin, english, tags, time_entered):
+def put_word(hanzi, pinyin, english, tags, pos, time_entered):
   # add to words table
   sql = """\
-INSERT INTO words (`hanzi`, `pinyin`, `english`, `time_entered`)
-VALUES ('%s', '%s', '%s', %s)
-""" % (hanzi, pinyin, english, time_entered)
+INSERT INTO words (`hanzi`, `pinyin`, `english`, `part_of_speech`, `time_entered`)
+VALUES ('%s', '%s', '%s', '%s', %s)
+""" % (hanzi, pinyin, english, pos, time_entered)
   db.execute(sql)
 
   # get word_id
@@ -64,7 +64,7 @@ VALUES (%s, '%s')
 
 def get_words_with_tag(tag):
   sql = """\
-SELECT `hanzi`, `pinyin`, `english`
+SELECT `hanzi`, `pinyin`, `english`, `part_of_speech`
 FROM words
 WHERE word_id IN 
   (SELECT word_id FROM word_tags
@@ -112,6 +112,7 @@ class VocabHandler(tornado.web.RequestHandler):
              self.get_argument("Pinyin"),
              self.get_argument("English"),
              self.get_argument("Tags"),
+             self.get_argument("POS"),
              int(time.time()))
 
     # Re-render vocab page, highlighting the word just added
