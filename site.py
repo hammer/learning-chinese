@@ -76,7 +76,6 @@ WHERE word_id IN
    GROUP BY word_id
    HAVING COUNT(*) = %d)
 """ % (tag_string, len(tags))
-  print sql
   return db.query(sql)
 
 def reset_application():
@@ -132,7 +131,6 @@ class QuizHandler(tornado.web.RequestHandler):
   def post(self):
     # get the words corresponding to a tag and randomize their order
     words = get_words_with_tag(self.get_argument("tag"))
-    print words
     random.shuffle(words)
     self.render("quiz.html", words=words, front=self.get_argument("front"), tag=self.get_argument("tag"))
 
