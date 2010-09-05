@@ -1,0 +1,10 @@
+#header {
+  margin-top:10px;
+  margin-bottom:10px;
+}
+
+#navlist li {
+  display:inline;
+  list-style-type:none;
+  padding-right:20px;
+}
