@@ -35,7 +35,8 @@ class Application(tornado.web.Application):
       (r"/sentences", controllers.SentencesHandler),
       (r"/passages", controllers.PassagesHandler),
       (r"/documents", controllers.DocumentsHandler),
-      (r"/quiz", controllers.QuizHandler),
+      (r"/quizzes", controllers.QuizzesHandler),
+      (r"/take_quiz/([0-9]+)", controllers.TakeQuizHandler),
     ]
     settings = dict(
       template_path=os.path.join(os.path.dirname(__file__), "templates"),

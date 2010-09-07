@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import random
 import time
 
 from tornado.web import RequestHandler
@@ -58,15 +57,32 @@ class DocumentsHandler(RequestHandler):
   def get(self):
     self.render("documents.html")
 
-class QuizHandler(RequestHandler):
+# TODO(hammer): Add some indication that a new quiz has been created
+class QuizzesHandler(RequestHandler):
   def get(self):
-    self.render("quiz.html", words=None)
+    self.render("quizzes.html", quizzes=models.get_quizzes())
 
   def post(self):
+    # figure out if we pressed the reset button
+    if self.get_argument("action", None) == "reset":
+      models.reset_quizzes()
+      self.render("quizzes.html", quizzes=models.get_quizzes())
+
     # get the words corresponding to a tag and randomize their order
-    words = models.get_words_with_tag(self.get_argument("tag"))
-    random.shuffle(words)
-    self.render("quiz.html",
-                words=words,
-                front=self.get_argument("front"),
-                tag=self.get_argument("tag"))
+    words = [result.word_id for result in models.get_words_with_tag(self.get_argument("tag"))]
+
+    # store the new quiz
+    models.put_quiz(self.get_argument("tag"),
+                    self.get_argument("front"),
+                    int(time.time()),
+                    words)
+
+    # Re-render the quizzes page
+    self.render("quizzes.html", quizzes=models.get_quizzes())
+
+class TakeQuizHandler(RequestHandler):
+  def get(self, quiz_id):
+    front = models.get_quiz_front(quiz_id)
+    words = models.get_quiz_words_randomized(quiz_id)
+
+    self.render("take_quiz.html", front=front, words=words)

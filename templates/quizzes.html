@@ -4,7 +4,7 @@
 
 {% block main_content %}
         <!-- Start a New Quiz -->
-        <form action="/quiz" method="post">
+        <form action="/quizzes" method="post">
           <fieldset>
             <legend>New Quiz</legend>
             <ul id="new-quiz-create">
@@ -27,23 +27,32 @@
           </fieldset>
         </form>
 
-        <!-- Current Quiz -->
-        {% if words %}
-        <p>Tag: {{ tag }}</p>
+        <!-- Quiz History -->
         <table>
           <tr>
+            <th>Tag</th>
+            <th>Date Created</th>
             <th>Front</th>
-            <th>Back</th>
+            <th>Number of Words</th>
+            <th></th>
           </tr>
-          {% for word in words %}
+          {% for quiz in quizzes %}
           <tr>
-            <td>{{ word[front.lower()] }}</td>
-            <td>{{ str(word) }}</td>
+            <td>{{ quiz.tag }}</td>
+            <td>{{ quiz.time_entered }}</td>
+            <td>{{ quiz.front }}</td>
+            <td>{{ quiz.num_words }}</td>
+            <td><a href="/take_quiz/{{ quiz.quiz_id }}">Take It</a></td>
           </tr>
           {% end %}
         </table>
-        {% end %}
 
-        <!-- Quiz History -->
-        <!-- Not Yet Implemented -->
+        <p>Total quizzes: {{ len(quizzes) }}</p>
+
+        <!-- Quizzes Reset -->
+        <div class="span-24 last">
+          <form action="/quizzes" method="post">
+          <input type="hidden" name="action" value="reset">
+          <input type="submit" value="Reset">
+        </div>
 {% end %}
