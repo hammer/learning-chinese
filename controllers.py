@@ -71,6 +71,11 @@ class QuizzesHandler(RequestHandler):
     # get the words corresponding to a tag and randomize their order
     words = [result.word_id for result in models.get_words_with_tag(self.get_argument("tag"))]
 
+    # Check to see if there are any words
+    # TODO(hammer): Should probably tell the user what's up here
+    if len(words) == 0:
+      self.render("quizzes.html", quizzes=models.get_quizzes())      
+
     # store the new quiz
     models.put_quiz(self.get_argument("tag"),
                     self.get_argument("front"),
