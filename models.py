@@ -30,9 +30,9 @@ def get_quiz_words_randomized(quiz_id):
   sql = """\
 SELECT c.hanzi, c.pinyin, c.english
 FROM quizzes AS a, quiz_words AS b, words AS c
-WHERE a.quiz_id = b.quiz_id AND b.word_id = c.word_id
+WHERE a.quiz_id = %s AND a.quiz_id = b.quiz_id AND b.word_id = c.word_id
 ORDER BY RAND(UNIX_TIMESTAMP())
-"""
+""" % quiz_id
   return db.query(sql)
 
 def get_quiz_front(quiz_id):
