@@ -1,3 +1,7 @@
 #new-word-entry li {
   list-style:none;
 }
+
+#edit-word-entry li {
+  list-style:none;
+}
