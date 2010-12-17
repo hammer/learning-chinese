@@ -30,6 +30,7 @@ class Application(tornado.web.Application):
       (r"/", controllers.MainHandler),
       (r"/radicals", controllers.RadicalsHandler),
       (r"/characters", controllers.CharactersHandler),
+      (r"/edit_word", controllers.EditWordHandler),
       (r"/words", controllers.WordsHandler),
       (r"/phrases", controllers.PhrasesHandler),
       (r"/sentences", controllers.SentencesHandler),

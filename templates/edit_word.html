@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}学习中文 | Words{% end %}
+
+{% block main_content %}
+        <!-- Add a New Word -->
+        <form action="/edit_word" method="post">
+          <fieldset>
+            <legend>Edit Word</legend>
+            <ul id="edit-word-entry">
+              <li>
+                <div class="span-4"><label for="汉字">汉字</lebl></div>
+                <div class="span-20 last"><input type="text" name="汉字" value="{{ word.hanzi }}"></div>
+              </li>
+              <li>
+                <div class="span-4"><label for="Pinyin">Pinyin</lebl></div>
+                <div class="span-20 last"><input type="text" name="Pinyin" value="{{ word.pinyin }}"></div>
+              </li>
+              <li>
+                <div class="span-4"><label for="English">English</lebl></div>
+                <div class="span-20 last"><input type="text" name="English" value="{{ word.english }}"></div>
+              </li>
+              <li>
+                <div class="span-4"><label for="Tags">Tags</lebl></div>
+                <div class="span-20 last"><input type="text" name="Tags" value="{{ word.tags }}"></div>
+              </li>
+              <li>
+                <div class="span-4"><label for="POS">Part of Speech</lebl></div>
+                <div class="span-20 last"><input type="text" name="POS" value="{{ word.part_of_speech }}"></div>
+              </li>
+            </ul>
+            <input type="hidden" name="word_id" value="{{ word.word_id }}">
+            <input type="submit" value="Submit">
+          </fieldset>
+        </form>
+{% end %}

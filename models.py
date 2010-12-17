@@ -9,7 +9,7 @@ db = tornado.database.Connection("localhost", "learning_chinese", "root")
 # TODO(hammer): get examples too?
 def get_words(word_ids=None):
   sql = """\
-SELECT a.hanzi, a.pinyin, a.english, a.part_of_speech, GROUP_CONCAT(b.tag SEPARATOR ', ') AS tags
+SELECT a.word_id, a.hanzi, a.pinyin, a.english, a.part_of_speech, GROUP_CONCAT(b.tag SEPARATOR ', ') AS tags
 FROM words AS a, word_tags AS b
 WHERE a.word_id = b.word_id
 GROUP BY a.word_id
@@ -69,6 +69,29 @@ INSERT INTO word_tags (word_id, tag)
 VALUES (%s, '%s')
 """ % (word_id, tag.strip())
     db.execute(sql)
+
+def update_word(word_id, hanzi, pinyin, english, tags, pos, time_entered):
+  # add to words table
+  sql = """\
+UPDATE words
+SET hanzi='%s', pinyin='%s', english='%s', part_of_speech='%s', time_entered='%s'
+WHERE word_id=%s
+""" % (hanzi, pinyin, english, pos, time_entered, word_id)
+  db.execute(sql)
+
+  # add to word_tags table
+  sql = """\
+DELETE FROM word_tags
+WHERE word_id=%s
+""" % word_id
+  db.execute(sql)
+
+  values_string = ','.join(["(%s, '%s')" % (word_id, tag.strip()) for tag in tags.split(',')])
+  sql = """\
+INSERT INTO word_tags (word_id, tag)
+VALUES %s
+""" % values_string
+  db.execute(sql)
 
 def put_quiz(tag, front, time_entered, words):
   # add to quizzes table

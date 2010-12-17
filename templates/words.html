@@ -40,6 +40,13 @@
         <hr />
         {% end %}
 
+        <!-- Just Edited Word -->
+        {% if edited_word %}
+        <hr />
+        <p>Just edited: {{ edited_word }}</p>
+        <hr />
+        {% end %}
+
         <!-- Known Words -->
         <table>
           <tr>
@@ -48,6 +55,7 @@
             <th>English</th>
             <th>Tags</th>
             <th>Part of Speech</th>
+            <th></th>
           </tr>
           {% for word in words %}
           <tr>
@@ -56,6 +64,7 @@
             <td>{{ word.english }}</td>
             <td>{% for tag in word.tags.split(',') %}{% include "words_tag_link.html" %}{% end %}</td>
             <td>{{ word.part_of_speech }}</td>
+            <td><a href="/edit_word?word_id={{ word.word_id }}">edit</a></td>
           </tr>
           {% end %}
         </table>

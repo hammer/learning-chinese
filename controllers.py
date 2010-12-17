@@ -22,13 +22,35 @@ class CharactersHandler(RequestHandler):
   def get(self):
     self.render("characters.html")
 
+class EditWordHandler(RequestHandler):
+  def get(self):
+    word_id = self.get_argument("word_id")
+    word = models.get_words([word_id])[0]
+    self.render("edit_word.html", word=word)
+
+  def post(self):
+    # Add new word to words list
+    models.update_word(self.get_argument("word_id"),
+                       self.get_argument("汉字"),
+                       self.get_argument("Pinyin"),
+                       self.get_argument("English"),
+                       self.get_argument("Tags"),
+                       self.get_argument("POS"),
+                       int(time.time()))
+
+    # Re-render words page, highlighting the word just added
+    self.render("words.html",
+                words=models.get_words(),
+                new_word=None,
+                edited_word=self.get_argument("汉字"))
+
 class WordsHandler(RequestHandler):
   def get(self):
     words = models.get_words()
     tag = self.get_argument("tag", None)
     if tag:
       words = models.get_words([str(w.word_id) for w in models.get_words_with_tag(tag)])
-    self.render("words.html", words=words, new_word=None)
+    self.render("words.html", words=words, new_word=None, edited_word=None)
 
   def post(self):
     # Add new word to words list
@@ -42,7 +64,8 @@ class WordsHandler(RequestHandler):
     # Re-render words page, highlighting the word just added
     self.render("words.html",
                 words=models.get_words(),
-                new_word=self.get_argument("汉字"))
+                new_word=self.get_argument("汉字"),
+                edited_word=None)
 
 class PhrasesHandler(RequestHandler):
   def get(self):
