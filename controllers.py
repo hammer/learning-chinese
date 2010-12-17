@@ -24,9 +24,12 @@ class CharactersHandler(RequestHandler):
 
 class WordsHandler(RequestHandler):
   def get(self):
-    self.render("words.html", words=models.get_words(), new_word=None)
+    words = models.get_words()
+    tag = self.get_argument("tag", None)
+    if tag:
+      words = models.get_words([str(w.word_id) for w in models.get_words_with_tag(tag)])
+    self.render("words.html", words=words, new_word=None)
 
-  # TODO(hammer): Form validation: deduplicate new words, etc.
   def post(self):
     # Add new word to words list
     models.put_word(self.get_argument("汉字"),

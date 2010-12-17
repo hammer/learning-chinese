@@ -54,7 +54,7 @@
             <td>{{ word.hanzi }}</td>
             <td>{{ word.pinyin }}</td>
             <td>{{ word.english }}</td>
-            <td>{{ word.tags }}</td>
+            <td>{% for tag in word.tags.split(',') %}{% include "words_tag_link.html" %}{% end %}</td>
             <td>{{ word.part_of_speech }}</td>
           </tr>
           {% end %}

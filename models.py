@@ -7,13 +7,15 @@ import tornado.database
 db = tornado.database.Connection("localhost", "learning_chinese", "root")
 
 # TODO(hammer): get examples too?
-def get_words():
+def get_words(word_ids=None):
   sql = """\
 SELECT a.hanzi, a.pinyin, a.english, a.part_of_speech, GROUP_CONCAT(b.tag SEPARATOR ', ') AS tags
 FROM words AS a, word_tags AS b
 WHERE a.word_id = b.word_id
 GROUP BY a.word_id
 """
+  if word_ids:
+    sql += "HAVING a.word_id IN (%s)" % ",".join(word_ids)
   return db.query(sql)
 
 # Note that we do some formatting of the timestamp
